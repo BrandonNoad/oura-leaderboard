@@ -31,6 +31,8 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
                 // May be undefined.
                 const { accessToken } = await ouraAuth.token.getToken(window.location.href);
 
+                console.log(accessToken);
+
                 if (accessToken === undefined) {
                     throw new Error('Invalid access token');
                 }
@@ -39,6 +41,7 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
 
                 window.location.hash = '';
             } catch (e) {
+                console.log(e);
                 // Redirect users to log in to Oura and authorize this app.
                 window.location.href = ouraAuth.token.getUri();
             }
