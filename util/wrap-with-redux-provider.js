@@ -18,7 +18,7 @@ const ReduxProviderPreloadedWithSession = ({ store, children }) => {
     const boundLogOut = () => store.dispatch(logOut());
 
     useEffect(() => {
-        netlifyIdentity.init();
+        netlifyIdentity.init({ disableAccessTokenCheck: true });
 
         // May be null.
         const netlifyIdentityResult = netlifyIdentity.currentUser();

@@ -15,4 +15,5 @@ export const init = (jwt) => {
     });
 };
 
-// export const createProjectPlan = (payload) => axiosInstance.post('/gtd', payload);
+export const fetchSleepForDay = (date, accessToken) =>
+    axiosInstance.get('/sleep', { params: { date, accessToken } });

@@ -14,3 +14,35 @@ html {
 body {
     background-color: #f4f7f8;
 }
+
+.item {
+    color: #fff;
+}
+
+.item0 {
+    color: red;
+}
+
+.item1 {
+    color: orange;
+}
+
+.item2 {
+    color: yellow;
+}
+
+.item3 {
+    color: green;
+}
+
+.item4 {
+    color: blue;
+}
+
+.item5 {
+    color: indigo;
+}
+
+.item6 {
+    color: violet;
+}

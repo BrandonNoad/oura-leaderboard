@@ -11,11 +11,19 @@ import Header from '../Header';
 import 'normalize.css';
 import './index.css';
 
+import { css } from '@emotion/core';
+
+const container = css`
+    height: calc(100vh - 50px);
+`;
+
 const Layout = ({ children }) => (
     <>
         <Header />
         <main>
-            <Box>{children}</Box>
+            <Box bg="black" p={5} css={container}>
+                {children}
+            </Box>
         </main>
     </>
 );

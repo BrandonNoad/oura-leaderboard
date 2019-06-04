@@ -3,19 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { navigate } from 'gatsby';
 import netlifyIdentity from 'netlify-identity-widget';
-import { Flex } from '@rebass/emotion';
+import { Flex, Box } from '@rebass/emotion';
 
 import { selectSession } from '../app/selectors';
 
 import Layout from '../components/Layout';
+import Image from '../components/image';
 
-import { css } from '@emotion/core';
-
-const container = css`
-    height: calc(100vh - 50px);
-`;
-
-// TODO: this isn't refreshing when we log in/log out. Probably something to do with it being a static page.
 const IndexPage = ({ session }) => {
     const isLoggedIn = session !== null;
 
@@ -26,17 +20,23 @@ const IndexPage = ({ session }) => {
             return;
         }
 
-        netlifyIdentity.open();
+        if (window.location.hash === '') {
+            netlifyIdentity.open();
+        }
     }, [isLoggedIn]);
 
     if (isLoggedIn) {
         // TODO: Use loading component.
-        return <p>Loading...</p>;
+        return null;
     }
 
     return (
         <Layout>
-            <Flex justifyContent="center" alignItems="center" css={container} />
+            <Flex justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+                <Box width={[1 / 2, 1 / 3, 1 / 4]}>
+                    <Image />
+                </Box>
+            </Flex>
         </Layout>
     );
 };

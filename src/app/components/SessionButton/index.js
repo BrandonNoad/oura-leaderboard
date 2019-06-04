@@ -11,14 +11,14 @@ const SessionButton = ({ session }) => {
 
     if (isLoggedIn) {
         return (
-            <Button bg="#00ad9f" onClick={() => netlifyIdentity.logout()}>
+            <Button bg="#64e7ec" color="#000" onClick={() => netlifyIdentity.logout()}>
                 Log Out
             </Button>
         );
     }
 
     return (
-        <Button bg="#00ad9f" onClick={() => netlifyIdentity.open()}>
+        <Button bg="#64e7ec" color="#000" onClick={() => netlifyIdentity.open()}>
             Log In
         </Button>
     );

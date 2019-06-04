@@ -8,8 +8,8 @@ import SessionButton from '../../app/components/SessionButton';
 const Header = ({ siteTitle }) => {
     return (
         <header>
-            <Flex justifyContent="space-between" p={2} bg="#140e42">
-                <Heading color="white">{siteTitle}</Heading>
+            <Flex justifyContent="space-between" p={2} bg="#fff">
+                <Heading color="black">{siteTitle}</Heading>
                 <SessionButton />
             </Flex>
         </header>
