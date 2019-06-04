@@ -20,7 +20,7 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
         const ouraAuth = new ClientOAuth2({
             clientId: process.env.GATSBY_OURA_APP_CLIENT_ID,
             authorizationUri: process.env.GATSBY_OURA_OAUTH2_AUTHORIZE_URL,
-            redirectUri: `${process.env.GATSBY_BASE_URL}/app`,
+            redirectUri: `${process.env.GATSBY_BASE_URL}/app/`,
             scopes: ['email', 'personal', 'daily']
             // TODO: add state
         });
@@ -31,8 +31,6 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
                 // May be undefined.
                 const { accessToken } = await ouraAuth.token.getToken(window.location.href);
 
-                console.log(accessToken);
-
                 if (accessToken === undefined) {
                     throw new Error('Invalid access token');
                 }
@@ -41,7 +39,6 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
 
                 window.location.hash = '';
             } catch (e) {
-                console.log(e);
                 // Redirect users to log in to Oura and authorize this app.
                 window.location.href = ouraAuth.token.getUri();
             }
