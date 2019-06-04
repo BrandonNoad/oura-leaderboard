@@ -6,7 +6,7 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(process.cwd(), '.env.development') });
 
 const Boom = require('@hapi/boom');
-const Joi = require('joi');
+const Joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const Axios = require('axios');
 const Airtable = require('airtable');
 
@@ -31,13 +31,15 @@ exports.handler = async (event, context) => {
 
         // -- Validate payload.
 
-        // TODO: improve validation
         const querySchema = Joi.object({
-            date: Joi.string()
-                .trim()
-                .required(),
+            // use .raw() instead of .options({ convert: false })
+            // https://github.com/hapijs/joi/issues/762
+            date: Joi.date()
+                .format('YYYY-MM-DD')
+                .required()
+                .raw(),
             accessToken: Joi.string()
-                .trim()
+                .token()
                 .required()
         });
 
@@ -45,6 +47,16 @@ exports.handler = async (event, context) => {
 
         if (error !== null) {
             throw Boom.boomify(error, { statusCode: 400 });
+        }
+
+        const { data } = await Axios.get(`https://api.ouraring.com/v1/userinfo`, {
+            headers: { Authorization: `Bearer ${query.accessToken}` }
+        });
+
+        const emailForUser = user.email.toLowerCase();
+
+        if (data.email.toLowerCase() !== emailForUser) {
+            throw Boom.badRequest('Invalid email');
         }
 
         const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(
@@ -63,8 +75,6 @@ exports.handler = async (event, context) => {
             })
             .firstPage()).map(resultToApi);
 
-        const emailForUser = user.email.toLowerCase();
-
         const isResultForUser = !!results.find(({ email }) => email.toLowerCase() === emailForUser);
 
         if (!isResultForUser) {
@@ -72,6 +82,9 @@ exports.handler = async (event, context) => {
                 headers: { Authorization: `Bearer ${query.accessToken}` },
                 params: { start: query.date, end: query.date }
             });
+
+            // Is there a difference between hasn't sync'd yet vs no sleep data (ring dead, forgot
+            // to wear it, etc.).
 
             if (data.sleep.length) {
                 const result = await base('sleep').create({
