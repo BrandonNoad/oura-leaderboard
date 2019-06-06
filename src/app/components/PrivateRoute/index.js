@@ -27,6 +27,8 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
             // TODO: add state
         });
 
+        const storageKeyName = 'ouraLeaderboard.authObj';
+
         (async function() {
             try {
                 // Get the access token from the fragment identifier.
@@ -45,24 +47,27 @@ const PrivateRoute = ({ session, component: Component, ...rest }) => {
                 // Store the access token in localStorage.
                 // TODO: Associate access token with current user.
                 window.localStorage.setItem(
-                    'ouraLeaderboardOAuth2Result',
+                    storageKeyName,
                     JSON.stringify({
+                        sessionId: session.id,
                         accessToken: ouraAuthResult.accessToken,
                         expires: ouraAuthResult.expires.getTime()
                     })
                 );
             } catch (e) {
                 // Check localStorage for access token.
-                const oAuth2Result = JSON.parse(
-                    window.localStorage.getItem('ouraLeaderboardOAuth2Result')
-                );
+                const storageResult = JSON.parse(window.localStorage.getItem(storageKeyName));
+
+                // TODO: Use Joi to validate localStorageResult;
 
                 // Is there an unexpired token?
                 if (
-                    _has(oAuth2Result, 'expires') &&
-                    Moment().isBefore(Moment(oAuth2Result.expires).subtract(1, 'days'))
+                    _has(storageResult, 'sessionId') &&
+                    storageResult.sessionId === session.id &&
+                    _has(storageResult, 'expires') &&
+                    Moment().isBefore(Moment(storageResult.expires).subtract(1, 'days'))
                 ) {
-                    setAccessToken(oAuth2Result.accessToken);
+                    setAccessToken(storageResult.accessToken);
                     return;
                 }
 
