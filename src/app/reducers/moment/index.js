@@ -7,6 +7,10 @@ export const updateMomentFactory = (getTodayMoment) => (state, goto) => {
             return getTodayMoment();
 
         case 'next-day':
+            if (state.isSame(getTodayMoment(), 'day')) {
+                return state;
+            }
+
             return Moment(state).add(1, 'days');
 
         case 'prev-day':
